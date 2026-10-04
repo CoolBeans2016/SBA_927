@@ -34,7 +34,11 @@ def tokenize_and_preprocess(text):
 ]
     return filtered_tokens
 
- 
+file_path = 'dataset.txt'
+file_path = 'dataset.txt'
+with open(file_path, 'r', encoding='utf-8') as file:
+    dataset = [line.strip() for line in file if line.strip()]
+
 # Tokenization and Preprocessing of the entire dataset
 processed_dataset = [tokenize_and_preprocess(text) for text in dataset]
 
