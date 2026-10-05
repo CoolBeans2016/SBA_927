@@ -273,7 +273,7 @@ PROMPT_TEMPLATE = (
 # Your own labels, one per line of business_reviews.txt, in the same order
 ground_truth = ["Positive", "Negative", "Neutral", "..."]  # fill in all 8
 
-llm = pipeline("text2text-generation", model="google/flan-t5-base")
+llm = pipeline(model="google/flan-t5-base")
 
 rows = []
 print("PROMPT-BASED SENTIMENT ANALYSIS (flan-t5-base)\n")
