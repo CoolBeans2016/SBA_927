@@ -100,4 +100,4 @@ The experiments show that different NLP techniques serve different purposes. NLT
 
 ## Appendix
 
-The complete, current Python implementation is in [`main.py`](./main.py). The input files are [`dataset.txt`](./dataset.txt) and [`business_reviews.txt`](./business_reviews.txt). Screenshots documenting the work and program output are included in the accompanying Word report; separate screenshot image files are not included in this README.
+The complete, current Python implementation is in [`main.py`](./main.py). The input files are [`dataset.txt`](./dataset.txt) and [`business_reviews.txt`](./business_reviews.txt). screenshots are included in the report and the code and input files are in main.py, dataset.txt, and business_reviews.txt.
