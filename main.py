@@ -270,22 +270,45 @@ PROMPT_TEMPLATE = (
     'Text: "{text}"\nSentiment:'
 )
 
-# Your own labels, one per line of business_reviews.txt, in the same order
-ground_truth = ["Positive", "Negative", "Neutral", "..."]  # fill in all 8
 
-llm = pipeline(model="google/flan-t5-base")
+# Replace these with the actual sentiment labels matching each line of business_reviews.txt in order
+ground_truth = [
+    "Positive",
+    "Negative",
+    "Neutral",
+    "Positive",
+    "Negative",
+    "Negative",
+    "Neutral",
+    "Positive",
+]
+
+from transformers import T5Tokenizer, T5ForConditionalGeneration
+
+model_name = "google/flan-t5-base"
+prompt_tokenizer = T5Tokenizer.from_pretrained(model_name)
+prompt_model = T5ForConditionalGeneration.from_pretrained(model_name)
+
+
 
 rows = []
 print("PROMPT-BASED SENTIMENT ANALYSIS (flan-t5-base)\n")
 for text, truth in zip(business, ground_truth):
-    prompt_label = llm(PROMPT_TEMPLATE.format(text=text), max_new_tokens=5)[0]["generated_text"].strip().capitalize()
-    tb_label = interpret_sentiment(TextBlob(text).sentiment.polarity)
+    prompt = PROMPT_TEMPLATE.format(text=text)
+    inputs = prompt_tokenizer(prompt, return_tensors="pt")
+    output_ids = prompt_model.generate(**inputs, max_new_tokens=5)
+    raw_out = prompt_tokenizer.decode(output_ids[0], skip_special_tokens=True)
+    prompt_label = raw_out.strip().capitalize()
+
     hf_label = sentiment_pipeline(text)[0]["label"].capitalize()
-    rows.append((truth, tb_label, hf_label, prompt_label))
+    tb_label = interpret_sentiment(TextBlob(text).sentiment.polarity)
+
     print(f"Text: {text}")
     print(f"  Truth: {truth} | TextBlob: {tb_label} | HF: {hf_label} | Prompt: {prompt_label}\n")
-
-print("ACCURACY AGAINST MY LABELS")
+    rows.append((truth, tb_label, hf_label, prompt_label))
+    
+    
+    
 for name, col in [("TextBlob", 1), ("Hugging Face", 2), ("Prompt-based", 3)]:
     correct = sum(r[0] == r[col] for r in rows)
     print(f"  {name}: {correct}/{len(rows)}")
